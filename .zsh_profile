@@ -1,0 +1,9 @@
+if [ -f ~/.bashrc ] ; then
+    . ~/.bashrc
+fi
+export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
+
+# Setting myPATH for Vim-Quickrun
+PATH="/Users/Satoshi/.vim/latex:${PATH}"
+export PATH
