@@ -177,9 +177,15 @@ PROMPT="$PROMPT"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" 
 fpath=(/usr/local/share/zsh/site-functions/ ${fpath})
 autoload -U compinit; compinit -u  # zshの補完機能を利用する
 
-# vimのquickrunでTeXファイルをpdfにコンパイル
-export PATH=$PATH:~/.vim/latex/
-
 # MacVimをターミナルで使う
-alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
-alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+#alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+#alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+
+# colordiff
+if [[ -x `which colordiff` ]]; then
+    alias diff='colordiff -u'
+else
+    alias diff='diff -u'
+fi
+
+PATH=$HOME/.vim/latex:$PATH

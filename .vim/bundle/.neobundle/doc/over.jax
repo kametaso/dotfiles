@@ -8,14 +8,15 @@
   コマンド			  |over-commands|
 設定				|over-setting|
   over の変数			  |over-variables|
-  over のコマンドラインのハイライト				  |over-command_line-highlight|
-  over のコマンドラインのキーマッピング				  |over-command_line-key-mappings|
+over のコマンドラインのハイライト				|over-command_line-highlight|
+over のコマンドラインのキーマッピング				|over-command_line-key-mappings|
+over のコマンドラインの autocmd |over-command_line-autocmd|
 
 
 ==============================================================================
 概要						*over-introduction*
 
-*over.vim* は |:substitute| の {oattern} のハイライトするプラグインです。
+*over.vim* は |:substitute| の {pattern} をハイライトするプラグインです。
 この機能を使用する場合、コマンドラインではなくてコマンドラインウィンドウから
 |:substitute| を行う必要があります。
 また、この場合は {pattern} のみがハイライトされます。
@@ -82,7 +83,7 @@ Default: >
 	let g:over_command_line_prompt = "> "
 <
 
-g:over_command_line_key_mappings		*g:over_command_line_key_mappings*
+g:over_command_line_key_mappings	*g:over_command_line_key_mappings*
 	コマンドラインで使用されるキーマッピングを設定します。
 	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
 	てることができます。
@@ -94,9 +95,40 @@ Example: >
 	\	"\<C-h>" : "\<C-b>",
 	\}
 <
+				*g:over#command_line#search#enable_incsearch*
+g:over#command_line#search#enable_incsearch
+	0 以外が設定されていれば :/ or :? 時にそのパータンをハイライトする。
+Default: >
+	let g:over#command_line#search#enable_incsearch = 1
+<
+				*g:over#command_line#search#enable_move_cursor*
+g:over#command_line#search#enable_move_cursor
+	0 以外が設定されていれば :/ or :? 時にそのパータンへカーソルを移動す
+	る。
+Default: >
+	let g:over#command_line#search#enable_move_cursor = 0
+<
+				*g:over#command_line#paste_escape_chars*
+g:over#command_line#paste_escape_chars
+	<C-v> 時に挿入するテキストを \ でエスケープする文字を設定する。
+Example: >
+	" $foo.bar / 2 + 1 を挿入すると
+	" \$foo\.bar \/ 2 + 1 が挿入される
+	let g:over#command_line#paste_escape_chars = '/.*$^~'
+<
+
+g:over#command_line#paste_filters	*g:over#command_line#paste_filters*
+	<C-v> 時に挿入するテキストを任意の文字で置換える設定をする。
+Default: >
+	" 改行コードを "\n" や "\r" に置き換えて挿入する
+	let g:over#command_line#paste_filters = {
+	\	"\n" : '\\n',
+	\	"\r" : '\\r',
+	\}
+<
 
 
-------------------------------------------------------------------------------
+==============================================================================
 over のコマンドラインのハイライト		*over-command_line-highlight*
 
 |over.vim| で使用される |:highlight| です。
@@ -113,7 +145,7 @@ OverCommandLineCursorInsert			*OverCommandLineCursorInsert*
 	
 
 
-------------------------------------------------------------------------------
+==============================================================================
 over のコマンドラインのキーマッピング	*over-command_line-key-mappings*
 
 コマンドラインで使用できるキーマッピングです。
@@ -124,7 +156,7 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 -----------		-------------------------------
 <CR>			コマンドの実行
 <Esc>			コマンドラインから抜ける
-<C-v>			レジスタ * の貼り付け
+<C-v>			最後にヤンクしたテキストを挿入する
 <BS> or <C-h>		1文字削除
 <C-w>			カーソルの前にある単語を削除
 <Right> or <C-f>	カーソルを右に移動
@@ -140,10 +172,6 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 <Tab>			バッファ上のワードで補完を行う
 <C-r>{0-9a-z"%#:-.*=}	番号/名前付きレジスタの挿入 
 
-	NOTE:
-	<Right> <Left> <Del> <Home> <End> <Up> <Down> はプラグイン側でマッ
-	プを行っているので、ユーザ側でマップを行う際はそれ以外のキーを使用
-	して下さい。
 
 また、以下は特殊なマッピングです。
 使用する場合は |OverCommandLineNoremap| で任意のキーに割り当てて下さい。
@@ -153,36 +181,42 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 						カーソルを移動
 <Plug>(over-cmdline-substitute-jump-string)	|:substitute| の {string} へ
 						カーソルを移動
+<Plug>(over-cmdline-scroll-y)			|CTRL-y| 相当
+<Plug>(over-cmdline-scroll-u)			|CTRL-u| 相当
+<Plug>(over-cmdline-scroll-f)			|CTRL-f| 相当
+<Plug>(over-cmdline-scroll-e)			|CTRL-e| 相当
+<Plug>(over-cmdline-scroll-d)			|CTRL-d| 相当
+<Plug>(over-cmdline-scroll-b)			|CTRL-b| 相当
 
 Example: >
     OverCommandLineNoremap <A-s> <Plug>(over-cmdline-substitute-jump-string)
     OverCommandLineNoremap <A-p> <Plug>(over-cmdline-substitute-jump-pattern)
 <
 
-NOTE: 次のキーは |OverCommandLineNoremap| にて再マップで定義されています。
-ユーザ側で |OverCommandLineNoremap| でマップする場合はもう片方のキーを使用して
-下さい。
+==============================================================================
+over のコマンドラインの autocmd			*over-command_line-autocmd*
 
-<Right>
-<Left>
-<Up>
-<Down>
-<BS>
-<Del>
-<Home>
-<End>
+|:OverCommandLine| から発行される |autocmd| |User| です。
 
-Example: >
-	" NG
-	OverCommandLineNoremap <A-l> <Right>
-	
-	" OK
-	OverCommandLineNoremap <A-l> <C-f>
-<
+名前			発生するとき~
+OverCmdLineEnter	コマンドラインが開始された時
+OverCmdLineLeave	コマンドラインが終了した時
+OverCmdLineExecutePre	コマンドが実行される直前
+OverCmdLineExecute	コマンドが実行された後
+OverCmdLineCharPre	いずれかのキーが入力された時
+			コマンドラインにキーが追加される前
+OverCmdLineChar		いずれかのキーが入力されてコマンドラインに追加された後
+OverCmdLineCancel	コマンドラインを実行しないで終了した時
 
 
+==============================================================================
+更新履歴						*over-changelog*
 
-
+2.0
+	- リファクタリング
+	- カーソルのハイライトを変更
+	- |:/|,:%g/ 時のハイライトを追加
+	- 特殊キー（CTRL + 文字等）が入力されないように変更
 
 
 ==============================================================================

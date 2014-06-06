@@ -7,3 +7,7 @@ export PATH=/usr/local/sbin:$PATH
 # Setting myPATH for Vim-Quickrun
 PATH="/Users/Satoshi/.vim/latex:${PATH}"
 export PATH
+export PATH=/usr/local/sbin:$PATH
+
+# beamerのコマンド
+export PATH=$PATH:~/.vim/latex

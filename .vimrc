@@ -1,7 +1,6 @@
 "General Settings
 set cindent
 set cinoptions=g0
-set directory=$HOME/.vimbackup
 set smartindent
 set title
 set mouse=a
