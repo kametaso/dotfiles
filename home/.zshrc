@@ -72,7 +72,7 @@ unsetopt hist_expire_dups_first  # 古いヒストリが削除されるとき、
 unsetopt hist_save_no_dups       # ヒストリ記録時に、古いコマンドと同じものがあれば削除する
 
 #auto ls
-function chpwd() { ls -a }
+function chpwd() { ls -ah }
 
 # cd .. with ^^
 function cdup(){
@@ -131,7 +131,7 @@ zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'c
 alias -s txt=less
 alias -s rb=ruby
 alias -s pl=perl
-alias ls="ls -a -G -l"
+alias ls="ls -a -G -l -h"
 alias rm="rm -i"
 
 #zsh syntax highlighting
