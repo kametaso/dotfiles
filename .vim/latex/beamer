@@ -1,8 +1,0 @@
-#!/bin/zsh
-basename=$1
-filename=${basename%.*}
-fontpatch=~/.vim/latex/wabun.map
-# tex -> dvi
-platex ${filename}.tex
-# dvi -> pdf
-dvipdfmx -f ${fontpatch} ${filename}.dvi
