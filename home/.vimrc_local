@@ -74,23 +74,33 @@ endif
 
 NeoBundle "mattn/emmet-vim"
 NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'Shougo/neobundle.vim.git'
+"NeoBundle 'Shougo/neobundle.vim.git'
 NeoBundle 'scrooloose/nerdtree'
-"NeoBundle 'davidhalter/jedi-vim'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neomru.vim'
 
 NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
 NeoBundle 'osyo-manga/vim-over'
-NeoBundle 'kana/vim-fakeclip'
+"NeoBundle 'kana/vim-fakeclip'
 
-filetype on
+" jedi-vim
+"NeoBundle 'davidhalter/jedi-vim'
+let g:jedi#popup_on_dot = 0
+NeoBundleLazy "davidhalter/jedi-vim", {
+            \ "autoload": {
+            \   "filetypes": ["python", "python3", "djangohtml"],
+            \ },
+            \ "build": {
+            \   "mac": "pip install jedi",
+            \   "unix": "pip install jedi",
+            \ }}
+
 filetype plugin indent on
 "*****************************************************************************"
 
 "python用設定
-filetype plugin on
 autocmd FileType python setl autoindent
 autocmd FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 autocmd FileType python setl expandtab tabstop=4 shiftwidth=4 softtabstop=4
@@ -102,16 +112,6 @@ autocmd FileType python :inoremap # a<C-H>#
 " NERDTreeを開く
 nmap <C-n> :NERDTreeToggle<CR>
 
-" jedi-vim
-let g:jedi#popup_on_dot = 0
-NeoBundleLazy "davidhalter/jedi-vim", {
-            \ "autoload": {
-            \   "filetypes": ["python", "python3", "djangohtml"],
-            \ },
-            \ "build": {
-            \   "mac": "pip install jedi",
-            \   "unix": "pip install jedi",
-            \ }}
 
 "neocomplcache
 let g:neocomplcache_enable_at_startup = 1
@@ -188,6 +188,11 @@ endfunction
 " Esc Esc でハイライトOFF
 nnoremap <Esc><Esc> :<C-u>set nohlsearch<Return>
 
+nnoremap / :<C-u>set hlsearch<Return>/
+nnoremap ? :<C-u>set hlsearch<Return>?                
+nnoremap * :<C-u>set hlsearch<Return>*
+nnoremap # :<C-u>set hlsearch<Return>#
+
 augroup auto_comment_off
         autocmd!
             autocmd BufEnter * setlocal formatoptions-=ro
@@ -247,4 +252,21 @@ let g:Powerline_symbols = 'fancy'
 
 " 文字コード
 set encoding=utf-8
-set fileencodings=ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932,utf-8
+"set fileencodings=ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932,utf-8
+
+" Unite
+let g:unite_source_file_mru_limit = 200
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+" バッファーと履歴
+nnoremap <silent> ,uu :<C-u>Unite file_mru buffer<CR>
+
+
+" vim-latexマクロ展開
+" let b:Imap_FreezeImap=1
+let b:Imap_FreezeImap=0
+
+" beamerをコンパイル
+autocmd FileType tex noremap <buffer> <F9> :w<CR> :!beamer <C-R>%<CR>
+
+" completefuncを上書き
+let g:neocomplcache_force_overwrite_completefunc = 1

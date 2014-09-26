@@ -14,6 +14,7 @@ moonscript-vim
 neobundle.vim
 neocomplcache
 neocomplete.vim
+neomru.vim
 nerdtree
 pyflakes-vim
 scss-syntax.vim

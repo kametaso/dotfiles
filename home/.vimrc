@@ -23,8 +23,9 @@ set virtualedit=block
 "Display Settings
 set number
 set list
+set listchars=eol:↲
 set ruler
-set nowrap
+set wrap
 set shellslash
 
 "Search Settings
@@ -114,56 +115,16 @@ function! s:hooks.on_source(bundle)
 endfunction
 
 "autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex -shell-escape "%" && evince %:p:r.pdf<CR>
-autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex <C-R>%<CR>
+"autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex <C-R>%<CR>
+
+
+
 
 ""Gist.vim Settings
 "let s:hooks = neobundle#get_hooks("gist-vim")
 "function! s:hooks.on_source(bundle)
 "    let g:gist_show_privates = 1
 "    let g:gist_privates = 1
-"endfunction
-
-
-""Ref.vim
-"let s:hooks = neobundle#get_hooks("vim-ref")
-"function! s:hooks.on_source(bundle)
-"    let g:ref_alc_start_linenumber = 10
-"    let g:ref_alc_encoding = 'Shift-JIS'
-"endfunction
-
-
-""errormarker.vim Settings
-"let g:errormarker_errortext = '!!'
-"let g:errormarker_warningtext = '??'
-"let g:errormarker_errorgroup = 'Error'
-"let g:errormarker_warninggroup = 'Todo'
-"highlight Error ctermbg=52 guibg=#5F0000
-"highlight Todo ctermbg=17 guibg=#00005F
-
-""Gundo.vim Settings
-"noremap U :<C-u>GundoToggle<CR>
-
-""Pandoc, shareboard Settings
-"function! s:shareboard_settings()
-"    nnoremap <buffer>[shareboard] <Nop>
-"    nmap <buffer><Leader> [shareboard]
-"    nnoremap <buffer><silent> [shareboard]v :ShareboardPreview<CR>
-"    nnoremap <buffer><silent> [shareboard]c :ShareboardCompile<CR>
-"endfunction
-"autocmd FileType rst,text,pandoc,markdown,textile call s:shareboard_settings()
-"let s:hooks = neobundle#get_hooks("shareboard.vim")
-"function! s:hooks.on_source(bundle)
-"    let $PATH=expand("~/.cabal/bin:") . $PATH
-"endfunction
-
-""vim-translator Settings
-"let s:hooks = neobundle#get_hooks("vim-translator")
-"function! s:hooks.on_source(bundle)
-"    let g:goog_user_conf = {
-"                \ 'langpair': 'en|ja',
-"                \ 'cmd': 'lua',
-"                \ 'v_key': 'T'
-"                \}
 "endfunction
 
 "neocomplete Settings
@@ -177,13 +138,263 @@ autocmd BufRead /tmp/crontab.* :set nobackup nowritebackup
 set expandtab
 
 "Load local Settings
-source $HOME/.vimrc_local
+"source $HOME/.vimrc_local
 
 set cursorline
 set nobackup
 
-" スペース+'.'で.vimrcを開く
+" スペース+'.'で.vimrc_localを開く
 nnoremap <Space>. :<C-u>tabedit ~/.vimrc_local<CR>
 
 " スペース+','で.vimrcを開く
 nnoremap <Space>, :<C-u>tabedit ~/.vimrc<CR>
+
+" 検索時に大文字小文字に関わらず検索する
+set ignorecase
+" タブをスペースに展開しない (expandtab:展開する)
+set expandtab
+" 自動的にインデントする (noautoindent:インデントしない)
+set autoindent
+" バックスペースでインデントや改行を削除できるようにする
+set backspace=2
+" 検索時にファイルの最後まで行ったら最初に戻る (nowrapscan:戻らない)
+set wrapscan
+" テキスト挿入中の自動折り返しを日本語に対応させる
+set formatoptions+=mM
+" 常にステータス行を表示 (詳細は:he laststatus)
+set laststatus=2
+" コマンドラインの高さ (Windows用gvim使用時はgvimrcを編集すること)
+set cmdheight=2
+" コマンドをステータス行に表示
+set showcmd
+
+"---------------------------------------------------------------------------
+" ファイル名に大文字小文字の区別がないシステム用の設定:
+ "   (例: DOS/Windows/MacOS)
+ "
+if filereadable($VIM . '/vimrc') && filereadable($VIM . '/ViMrC')
+  " tagsファイルの重複防止
+    set tags=./tags,tags
+endif
+
+set wildmenu               " コマンド補完を強化
+set wildchar=<tab>         " コマンド補完を開始するキー
+
+
+" autofmt: 日本語文章のフォーマット(折り返し)プラグイン.
+set formatexpr=autofmt#japanese#formatexpr()
+
+
+"改行時にコメント自動で挿入するのを解除
+autocmd FileType * setlocal formatoptions-=ro
+
+"zencoding
+let g:user_zen_expandabbr_key = '<c-r>'
+
+
+"*****************************************************************************"
+"NeoBundle.vimのプラグイン
+filetype off
+set nocompatible " be iMproved
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+    call neobundle#rc(expand('~/.vim/bundle/'))
+endif
+
+NeoBundle "mattn/emmet-vim"
+NeoBundle 'thinca/vim-quickrun'
+"NeoBundle 'Shougo/neobundle.vim.git'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/neomru.vim'
+
+NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+NeoBundle 'osyo-manga/vim-over'
+"NeoBundle 'kana/vim-fakeclip'
+
+" jedi-vim
+"NeoBundle 'davidhalter/jedi-vim'
+let g:jedi#popup_on_dot = 0
+NeoBundleLazy "davidhalter/jedi-vim", {
+            \ "autoload": {
+            \   "filetypes": ["python", "python3", "djangohtml"],
+            \ },
+            \ "build": {
+            \   "mac": "pip install jedi",
+            \   "unix": "pip install jedi",
+            \ }}
+
+filetype plugin indent on
+"*****************************************************************************"
+
+"python用設定
+autocmd FileType python setl autoindent
+autocmd FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+autocmd FileType python setl expandtab tabstop=4 shiftwidth=4 softtabstop=4
+set nobackup
+set guifont=Ricty:h14
+au BufEnter *.py setlocal indentkeys+=0#
+autocmd FileType python :inoremap # a<C-H># 
+
+" NERDTreeを開く
+nmap <C-n> :NERDTreeToggle<CR>
+
+
+"neocomplcache
+let g:neocomplcache_enable_at_startup = 1
+
+" クリップボードとvimを共有
+set clipboard=unnamed,autoselect
+set clipboard+=unnamed
+set clipboard+=autoselect
+
+set t_Co=256
+
+"lightline.vim設定
+let g:lightline = {
+        \ 'colorscheme': 'wombat',
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+        \ },
+        \ 'component_function': {
+        \   'modified': 'MyModified',
+        \   'readonly': 'MyReadonly',
+        \   'fugitive': 'MyFugitive',
+        \   'filename': 'MyFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode'
+        \ }
+        \ }
+
+function! MyModified()
+    return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+    return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+endfunction
+
+function! MyFilename()
+    return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+                \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+                \  &ft == 'unite' ? unite#get_status_string() :
+                \  &ft == 'vimshell' ? vimshell#get_status_string() :
+                \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+    try
+        if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+            return fugitive#head()
+        endif
+    catch
+    endtry
+    return ''
+endfunction
+
+function! MyFileformat()
+    return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+    return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+" Esc Esc でハイライトOFF
+nnoremap <Esc><Esc> :<C-u>set nohlsearch<Return>
+
+nnoremap / :<C-u>set hlsearch<Return>/
+nnoremap ? :<C-u>set hlsearch<Return>?                
+nnoremap * :<C-u>set hlsearch<Return>*
+nnoremap # :<C-u>set hlsearch<Return>#
+
+augroup auto_comment_off
+        autocmd!
+            autocmd BufEnter * setlocal formatoptions-=ro
+augroup END
+
+
+""
+"" Vim-LaTeX
+""
+filetype plugin on
+filetype indent on
+set shellslash
+set grepprg=grep\ -nH\ $*
+let g:tex_flavor='latex'
+let g:Imap_UsePlaceHolders = 1
+let g:Imap_DeleteEmptyPlaceHolders = 1
+let g:Imap_StickyPlaceHolders = 0
+let g:Tex_DefaultTargetFormat = 'pdf'
+"let g:Tex_FormatDependency_pdf = 'pdf'
+let g:Tex_FormatDependency_pdf = 'dvi,pdf'
+"let g:Tex_FormatDependency_pdf = 'dvi,ps,pdf'
+let g:Tex_FormatDependency_ps = 'dvi,ps'
+let g:Tex_CompileRule_pdf = '/usr/texbin/ptex2pdf -u -l -ot "-synctex=1 -interaction=nonstopmode -file-line-error-style" $*'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/pdflatex -synctex=1
+"-interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/lualatex -synctex=1
+"-interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/luajitlatex -synctex=1
+"-interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/xelatex -synctex=1
+"-interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/dvipdfmx $*.dvi'
+"let g:Tex_CompileRule_pdf = '/usr/local/bin/ps2pdf $*.ps'
+let g:Tex_CompileRule_ps = '/usr/texbin/dvips -Ppdf -o $*.ps $*.dvi'
+let g:Tex_CompileRule_dvi = '/usr/texbin/uplatex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
+let g:Tex_BibtexFlavor = '/usr/texbin/upbibtex'
+"let g:Tex_BibtexFlavor = '/usr/texbin/bibtex'
+"let g:Tex_BibtexFlavor = '/usr/texbin/bibtexu'
+let g:Tex_MakeIndexFlavor = '/usr/texbin/mendex $*.idx'
+"let g:Tex_MakeIndexFlavor = '/usr/texbin/makeindex $*.idx'
+"let g:Tex_MakeIndexFlavor = '/usr/texbin/texindy $*.idx'
+let g:Tex_UseEditorSettingInDVIViewer = 1
+let g:Tex_ViewRule_pdf = '/usr/bin/open'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a Skim.app'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a TeXShop.app'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a TeXworks.app'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a Firefox.app'
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a "Adobe Reader.app"'
+
+
+" powerlineのフォント設定
+let g:Powerline_symbols = 'fancy'
+
+" emmet-vim
+"let g:user_emmet_leader_key='<c-t>'
+
+" 文字コード
+set fileencodings=ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932,utf-8
+
+" Unite
+let g:unite_source_file_mru_limit = 200
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+" バッファーと履歴
+nnoremap <silent> ,uu :<C-u>Unite file_mru buffer<CR>
+
+
+" vim-latexマクロ展開
+" let b:Imap_FreezeImap=1
+let b:Imap_FreezeImap=0
+
+" beamerをコンパイル
+autocmd FileType tex noremap <buffer> <F9> :w<CR> :!beamer <C-R>%<CR>
+
+" completefuncを上書き
+let g:neocomplcache_force_overwrite_completefunc = 1
