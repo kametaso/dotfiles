@@ -193,6 +193,6 @@ PATH=$HOME/.vim/latex:$PATH
 
 case ${OSTYPE} in 
     linux*)
-        alias ls="ls -a -G -l -h"
+        alias ls="ls -a -G -l --color"
         ;;
 esac
