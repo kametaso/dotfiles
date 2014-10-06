@@ -191,4 +191,8 @@ fi
 PATH=$HOME/.vim/latex:$PATH
 
 
-[ -f $ZDOTDIR/.zshrc_local ] && . $ZDOTDIR/.zshrc_local
+case ${OSTYPE} in 
+    linux*)
+        alias ls="ls -a -G -l -h"
+        ;;
+esac
