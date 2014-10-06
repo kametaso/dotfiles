@@ -189,3 +189,6 @@ else
 fi
 
 PATH=$HOME/.vim/latex:$PATH
+
+
+[ -f $ZDOTDIR/.zshrc_local ] && . $ZDOTDIR/.zshrc_local
