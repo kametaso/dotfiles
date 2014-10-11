@@ -11,10 +11,11 @@ lightline.vim
 lua-support
 mkdpreview-vim
 moonscript-vim
-neobundle.vim
-neocomplcache
+neocomplete
 neocomplete.vim
 neomru.vim
+neosnippet
+neosnippet-snippets
 nerdtree
 pyflakes-vim
 scss-syntax.vim
@@ -24,7 +25,6 @@ tComment
 unite.vim
 vim-coffee-script
 vim-css3-syntax
-vim-fakeclip
 vim-glsl
 vim-javascript
 vim-latex
@@ -33,5 +33,6 @@ vim-puppet
 vim-quickrun
 vim-ref
 vim-scala
+vim-surround
 vim-translator
 vimfiler
