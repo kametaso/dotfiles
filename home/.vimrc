@@ -203,8 +203,6 @@ endif
 
 NeoBundle "mattn/emmet-vim"
 NeoBundle 'thinca/vim-quickrun'
-"NeoBundle 'Shougo/neobundle.vim.git'
-NeoBundle 'scrooloose/nerdtree'
 NeoBundle "Shougo/neocomplete.vim"
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'Shougo/unite.vim'
@@ -215,6 +213,7 @@ NeoBundle 'Shougo/neosnippet.git'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'tpope/vim-surround'
 "NeoBundle 'kana/vim-fakeclip'
+"NeoBundle 'Shougo/neobundle.vim.git'
 
 " jedi-vim
 "NeoBundle 'davidhalter/jedi-vim'
@@ -241,7 +240,7 @@ au BufEnter *.py setlocal indentkeys+=0#
 autocmd FileType python :inoremap # a<C-H># 
 
 " NERDTreeを開く
-nmap <C-n> :NERDTreeToggle<CR>
+"nmap <C-n> :NERDTreeToggle<CR>
 
 
 "neocomplcache
@@ -404,15 +403,17 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)"
             \: "\<TAB>"
 
-" For snippet_complete marker.
-if has('conceal')
-    set conceallevel=2 concealcursor=i
-endif
-
+"" For snippet_complete marker.
+"if has('conceal')
+"    set conceallevel=2 concealcursor=i
+"endif
 
 " vim-latexマクロ展開
 " let b:Imap_FreezeImap=1
 let b:Imap_FreezeImap=0
+
+"Conceal機能を無効化
+let g:tex_conceal=''
 
 " beamerをコンパイル
 autocmd FileType tex noremap <buffer> <F9> :w<CR> :!beamer <C-R>%<CR>
@@ -446,11 +447,9 @@ NeoBundle has('lua') ? 'Shougo/neocomplete' : 'Shougo/neocomplcache'
 "    let g:neocomplcache_enable_camel_case_completion = 1
 "    let g:neocomplcache_enable_underbar_completion = 1
 "endif
-"inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 
 
-"Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
 " Use neocomplete.
