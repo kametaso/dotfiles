@@ -23,7 +23,7 @@ set virtualedit=block
 "Display Settings
 set number
 set list
-set listchars=eol:↲
+set listchars=eol:↲,tab:▸\
 set ruler
 set wrap
 set shellslash
@@ -212,8 +212,16 @@ NeoBundle 'osyo-manga/vim-over'
 NeoBundle 'Shougo/neosnippet.git'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'tpope/vim-surround'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimproc', {
+            \ 'build' : {
+            \ 'windows' : 'make -f make_mingw32.mak',
+            \ 'cygwin' : 'make -f make_cygwin.mak',
+            \ 'mac' : 'make -f make_mac.mak',
+            \ 'unix' : 'make -f make_unix.mak',
+            \ },
+            \ }
 "NeoBundle 'kana/vim-fakeclip'
-"NeoBundle 'Shougo/neobundle.vim.git'
 
 " jedi-vim
 "NeoBundle 'davidhalter/jedi-vim'
@@ -507,3 +515,29 @@ endif
 "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+
+" vimshell {{{
+nnoremap <silent> ,vs :<C-U>VimShell<CR>
+
+"!let g:vimshell_prompt = "% "
+
+let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+"let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+let g:vimshell_enable_smart_case = 1
+
+if has('win32') || has('win64')
+    " Display user name on Windows.
+    let g:vimshell_prompt = $USERNAME."% "
+else
+    " Display user name on Linux.
+    let g:vimshell_prompt = $USER."% "
+
+    call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+    call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+    let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+    call vimshell#set_execute_file('tgz,gz', 'gzcat')
+    call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+endif
+
+" }}}

@@ -16,7 +16,6 @@ neocomplete.vim
 neomru.vim
 neosnippet
 neosnippet-snippets
-nerdtree
 pyflakes-vim
 scss-syntax.vim
 shareboard.vim
@@ -36,3 +35,4 @@ vim-scala
 vim-surround
 vim-translator
 vimfiler
+vimproc
