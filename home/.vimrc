@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 "General Settings
 set cindent
 set cinoptions=g0
@@ -71,6 +73,7 @@ function! s:mkdir(dir, force)
 endfunction
 au BufWritePre * call s:mkdir(expand('<afile>:p:h'), v:cmdbang)
 
+" neobundlesでまとめてインストール
 source <sfile>:h/.vim/neobundles.vim
 
 "vimfiler Settings
@@ -117,15 +120,6 @@ endfunction
 "autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex -shell-escape "%" && evince %:p:r.pdf<CR>
 "autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex <C-R>%<CR>
 
-
-
-
-""Gist.vim Settings
-"let s:hooks = neobundle#get_hooks("gist-vim")
-"function! s:hooks.on_source(bundle)
-"    let g:gist_show_privates = 1
-"    let g:gist_privates = 1
-"endfunction
 
 "neocomplete Settings
 let s:hooks = neobundle#get_hooks("neocomplete.vim")
@@ -201,10 +195,10 @@ if has('vim_starting')
     call neobundle#rc(expand('~/.vim/bundle/'))
 endif
 
-NeoBundle "mattn/emmet-vim"
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle "Shougo/neocomplete.vim"
 NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'Shougo/vimfiler.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
@@ -221,11 +215,12 @@ NeoBundle 'Shougo/vimproc', {
             \ 'unix' : 'make -f make_unix.mak',
             \ },
             \ }
-"NeoBundle 'kana/vim-fakeclip'
+NeoBundle 'Align'
+NeoBundle 'Yggdroot/indentLine'
 
 " jedi-vim
 "NeoBundle 'davidhalter/jedi-vim'
-let g:jedi#popup_on_dot = 0
+let g:jedi#popup_on_dot = 1
 NeoBundleLazy "davidhalter/jedi-vim", {
             \ "autoload": {
             \   "filetypes": ["python", "python3", "djangohtml"],
@@ -242,13 +237,9 @@ filetype plugin indent on
 autocmd FileType python setl autoindent
 autocmd FileType python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 autocmd FileType python setl expandtab tabstop=4 shiftwidth=4 softtabstop=4
-set nobackup
 set guifont=Ricty:h14
 au BufEnter *.py setlocal indentkeys+=0#
 autocmd FileType python :inoremap # a<C-H># 
-
-" NERDTreeを開く
-"nmap <C-n> :NERDTreeToggle<CR>
 
 
 "neocomplcache
@@ -385,17 +376,17 @@ let g:Tex_ViewRule_pdf = '/usr/bin/open'
 " powerlineのフォント設定
 let g:Powerline_symbols = 'fancy'
 
-" emmet-vim
-"let g:user_emmet_leader_key='<c-t>'
 
 " 文字コード
 set fileencodings=ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932,utf-8
 
 " Unite
 let g:unite_source_file_mru_limit = 200
-nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+nnoremap <silent> <Space>k :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+"nnoremap <silent> ,kk :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 " バッファーと履歴
-nnoremap <silent> ,uu :<C-u>Unite file_mru buffer<CR>
+nnoremap <silent> <Space>u :<C-u>Unite file_mru buffer<CR>
+"nnoremap <silent> ,ku :<C-u>Unite file_mru buffer<CR>
 
 
 " Neosnippet" Plugin key-mappings.
@@ -428,7 +419,6 @@ autocmd FileType tex noremap <buffer> <F9> :w<CR> :!beamer <C-R>%<CR>
 
 " completefuncを上書き
 let g:neocomplcache_force_overwrite_completefunc = 1
-
 
 " if_luaが有効ならneocompleteを使う
 NeoBundle has('lua') ? 'Shougo/neocomplete' : 'Shougo/neocomplcache'
@@ -516,6 +506,28 @@ endif
 "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
 "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
+"jediとneocomplete
+"autocmd FileType python setlocal omnifunc=jedi#completions
+""let g:jedi#popup_select_first=0
+"let g:jedi#completions_enabled = 0
+"let g:jedi#auto_vim_configuration = 0
+"let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
+
+if !exists('g:neocomplete# force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+
+" let g:neocomplete# force_omni_input_patterns.python = '\%([^.
+" \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
+
+
+
 
 " vimshell {{{
 nnoremap <silent> ,vs :<C-U>VimShell<CR>
@@ -539,5 +551,14 @@ else
     call vimshell#set_execute_file('tgz,gz', 'gzcat')
     call vimshell#set_execute_file('tbz,bz2', 'bzcat')
 endif
-
 " }}}
+
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. <Leader>aip)
+nmap <Leader>a <Plug>(EasyAlign)
+
+" indentLine
+let g:indentLine_color_term = 239
+let g:indentLine_color_gui = '#708090'
+let g:indentLine_char = '¦' "use ¦, ┆ or │
