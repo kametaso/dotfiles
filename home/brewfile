@@ -1,0 +1,39 @@
+update
+upgrade
+
+tap caskroom/cask
+install brew-cask
+
+install git 
+install hg 
+install gist 
+install hub 
+install tmux 
+install tree 
+install openssl 
+install readline 
+install zsh 
+install wget 
+install curl 
+install automake 
+install tig 
+install mercurial 
+install python3 
+install rbenv 
+install mysql 
+install sqlite 
+install cmake 
+
+cask install dropbox 
+cask install skype 
+cask install alfred 
+cask alfred link
+cask install google-chrome 
+cask install firefox 
+cask install vlc 
+cask install sublime-text 
+cask install iterm2 
+cask install appcleaner 
+cask install karabiner 
+cask install bettertouchtool
+cask install macvim-kaoriya
