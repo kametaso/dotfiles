@@ -134,7 +134,7 @@ set expandtab
 "Load local Settings
 "source $HOME/.vimrc_local
 
-set cursorline
+"set cursorline
 set nobackup
 
 " スペース+'.'で.vimrc_localを開く
@@ -378,7 +378,7 @@ let g:Powerline_symbols = 'fancy'
 
 
 " 文字コード
-set fileencodings=ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932,utf-8
+set fileencodings=utf-8,ucs-bom,iso-2022-jp-3,iso-2022-jp,eucjp-ms,euc-jisx0213,euc-jp,sjis,cp932
 
 " Unite
 let g:unite_source_file_mru_limit = 200
@@ -562,3 +562,51 @@ nmap <Leader>a <Plug>(EasyAlign)
 let g:indentLine_color_term = 239
 let g:indentLine_color_gui = '#708090'
 let g:indentLine_char = '¦' "use ¦, ┆ or │
+
+" GNU GLOBAL(gtags)
+nmap <C-q> <C-w><C-w><C-w>q
+nmap <C-g> :Gtags -g
+nmap <C-l> :Gtags -f %<CR>
+nmap <C-m> :Gtags <C-r><C-w><CR>
+"nmap <C-t> :GtagsCursor<CR>
+nmap <C-k> :Gtags -r <C-r><C-w><CR>
+nmap <C-n> :cn<CR>
+nmap <C-p> :cp<CR>
+" Ctrl-q 検索結果Windowを閉じる
+" Ctrl-g ソースコードの grep
+" Ctrl-l このファイルの関数一覧
+" Ctrl-j カーソル以下の定義元を探す
+" Ctrl-k カーソル以下の使用箇所を探す
+" Ctrl-n 次の検索結果へジャンプする
+" Ctrl-p 前の検索結果へジャンプする
+
+" 画面切り替え時等のみcursorlineを表示. 
+augroup vimrc-auto-cursorline
+  autocmd!
+  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+  autocmd WinEnter * call s:auto_cursorline('WinEnter')
+  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+
+  let s:cursorline_lock = 0
+  function! s:auto_cursorline(event)
+    if a:event ==# 'WinEnter'
+      setlocal cursorline
+      let s:cursorline_lock = 2
+    elseif a:event ==# 'WinLeave'
+      setlocal nocursorline
+    elseif a:event ==# 'CursorMoved'
+      if s:cursorline_lock
+        if 1 < s:cursorline_lock
+          let s:cursorline_lock = 1
+        else
+          setlocal nocursorline
+          let s:cursorline_lock = 0
+        endif
+      endif
+    elseif a:event ==# 'CursorHold'
+      setlocal cursorline
+      let s:cursorline_lock = 1
+    endif
+  endfunction
+augroup END

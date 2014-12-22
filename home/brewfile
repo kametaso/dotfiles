@@ -23,6 +23,7 @@ install rbenv
 install mysql 
 install sqlite 
 install cmake 
+install vim --with-lua --with-perl --with-python3 --without-python
 
 cask install dropbox 
 cask install skype 

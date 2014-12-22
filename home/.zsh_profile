@@ -11,3 +11,4 @@ export PATH=/usr/local/sbin:$PATH
 
 # beamerのコマンド
 export PATH=$PATH:~/.vim/latex
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi

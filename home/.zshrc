@@ -143,6 +143,8 @@ fi
 PYENV_ROOT=$HOME/.pyenv
 PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 
+alias brew="env PATH=${PATH/\/Users\/khtmtvx\/\.pyenv\/shims:/} brew"
+
 #for Ruby Development
 PATH=$HOME/.rbenv/bin:$PATH
 PATH=$HOME/.rbenv/shims:$PATH # Add rbenv to PATH
@@ -196,3 +198,13 @@ case ${OSTYPE} in
         alias ls="ls -a -G -l --color"
         ;;
 esac
+
+## virtualenv, virtualenvwrapper
+which virtualenvwrapper.sh > /dev/null
+if [ $? -eq 0 ]; then
+#    source `which virtualenvwrapper.sh`
+    mkdir -p ~/.virtualenvs
+    export WORKON_HOME=~/.virtualenvs
+    export PIP_RESPECT_VIRTUALENV=true
+fi
+
