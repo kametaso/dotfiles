@@ -217,6 +217,7 @@ NeoBundle 'Shougo/vimproc', {
             \ }
 NeoBundle 'Align'
 NeoBundle 'Yggdroot/indentLine'
+NeoBundle 'Shougo/unite-outline'
 
 " jedi-vim
 "NeoBundle 'davidhalter/jedi-vim'
@@ -576,37 +577,53 @@ nmap <C-p> :cp<CR>
 " Ctrl-g ソースコードの grep
 " Ctrl-l このファイルの関数一覧
 " Ctrl-j カーソル以下の定義元を探す
-" Ctrl-k カーソル以下の使用箇所を探す
+" Ctrl-m カーソル以下の使用箇所を探す
 " Ctrl-n 次の検索結果へジャンプする
 " Ctrl-p 前の検索結果へジャンプする
 
 " 画面切り替え時等のみcursorlineを表示. 
 augroup vimrc-auto-cursorline
-  autocmd!
-  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-  autocmd WinEnter * call s:auto_cursorline('WinEnter')
-  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+    autocmd!
+    autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+    autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+    autocmd WinEnter * call s:auto_cursorline('WinEnter')
+    autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
-  let s:cursorline_lock = 0
-  function! s:auto_cursorline(event)
-    if a:event ==# 'WinEnter'
-      setlocal cursorline
-      let s:cursorline_lock = 2
-    elseif a:event ==# 'WinLeave'
-      setlocal nocursorline
-    elseif a:event ==# 'CursorMoved'
-      if s:cursorline_lock
-        if 1 < s:cursorline_lock
-          let s:cursorline_lock = 1
-        else
-          setlocal nocursorline
-          let s:cursorline_lock = 0
+    let s:cursorline_lock = 0
+    function! s:auto_cursorline(event)
+        if a:event ==# 'WinEnter'
+            setlocal cursorline
+            let s:cursorline_lock = 2
+        elseif a:event ==# 'WinLeave'
+            setlocal nocursorline
+        elseif a:event ==# 'CursorMoved'
+            if s:cursorline_lock
+                if 1 < s:cursorline_lock
+                    let s:cursorline_lock = 1
+                else
+                    setlocal nocursorline
+                    let s:cursorline_lock = 0
+                endif
+            endif
+        elseif a:event ==# 'CursorHold'
+            setlocal cursorline
+            let s:cursorline_lock = 1
         endif
-      endif
-    elseif a:event ==# 'CursorHold'
-      setlocal cursorline
-      let s:cursorline_lock = 1
-    endif
-  endfunction
+    endfunction
 augroup END
+
+" 行末までをヤンク
+nnoremap Y y$
+
+" unite outline
+nnoremap <silent> <Space>o : <C-u>Unite -no-quit -vertical -winwidth=30 outline<CR> 
+"- See more at: http://syotaro.ruhoh.com/posts/20121216-tips-vim-outliner/#sthash.Lvzhf2ot.dpuf
+let g:unite_source_outline_filetype_options = {
+            \ '*': {
+            \   'auto_update': 1,
+            \   'auto_update_event': 'write',
+            \ },
+            \ 'tex': {
+            \   'auto_update_event': 'hold',
+            \ },
+            \}

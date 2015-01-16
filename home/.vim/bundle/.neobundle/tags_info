@@ -18,6 +18,7 @@ scss-syntax.vim
 shareboard.vim
 simplenote.vim
 tComment
+unite-outline
 unite.vim
 vim-css3-syntax
 vim-latex
