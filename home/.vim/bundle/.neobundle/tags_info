@@ -1,4 +1,3 @@
-Align
 autojump.vim
 emmet-vim
 errormarker.vim
@@ -21,8 +20,10 @@ tComment
 unite-outline
 unite.vim
 vim-css3-syntax
+vim-easy-align
 vim-latex
 vim-over
+vim-python-pep8-indent
 vim-quickrun
 vim-ref
 vim-surround
