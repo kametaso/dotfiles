@@ -43,11 +43,8 @@ filetype plugin indent on
 filetype indent on
 syntax on
 
-"Color Scheme
-" colorscheme mirodark
-colorscheme lucius
-set background=dark
-
+" 行末までをヤンク
+nnoremap Y y$
 
 "split like tmux
 noremap <C-w>% :vsp<CR>
@@ -129,7 +126,6 @@ endfunction
 "endfunction
 
 autocmd BufRead /tmp/crontab.* :set nobackup nowritebackup
-set expandtab
 
 "Load local Settings
 "source $HOME/.vimrc_local
@@ -145,8 +141,6 @@ nnoremap <Space>, :<C-u>tabedit ~/.vimrc<CR>
 
 " 検索時に大文字小文字に関わらず検索する
 set ignorecase
-" タブをスペースに展開しない (expandtab:展開する)
-set expandtab
 " 自動的にインデントする (noautoindent:インデントしない)
 set autoindent
 " バックスペースでインデントや改行を削除できるようにする
@@ -191,7 +185,7 @@ filetype off
 set nocompatible " be iMproved
 if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim
-    call neobundle#rc(expand('~/.vim/bundle/'))
+    call neobundle#begin(expand('~/.vim/bundle/'))
 endif
 
 NeoBundle 'thinca/vim-quickrun'
@@ -232,7 +226,10 @@ NeoBundleLazy "davidhalter/jedi-vim", {
             \   "unix": "pip install jedi",
             \ }}
 
+" if_luaが有効ならneocompleteを使う
+NeoBundle has('lua') ? 'Shougo/neocomplete' : 'Shougo/neocomplcache'
 
+call neobundle#end()
 filetype plugin indent on
 "*****************************************************************************"
 
@@ -250,6 +247,12 @@ set clipboard+=unnamed
 set clipboard+=autoselect
 
 set t_Co=256
+
+"Color Scheme
+" colorscheme mirodark
+colorscheme lucius
+set background=dark
+
 
 "lightline.vim設定
 let g:lightline = {
@@ -371,6 +374,9 @@ let g:Tex_ViewRule_pdf = '/usr/bin/open'
 "let g:Tex_ViewRule_pdf = '/usr/bin/open -a Firefox.app'
 "let g:Tex_ViewRule_pdf = '/usr/bin/open -a "Adobe Reader.app"'
 
+" vim-latexマクロ展開
+" let b:Imap_FreezeImap=1
+let b:Imap_FreezeImap=0
 
 " powerlineのフォント設定
 let g:Powerline_symbols = 'fancy'
@@ -399,24 +405,15 @@ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)"
             \: "\<TAB>"
 
-
-" vim-latexマクロ展開
-" let b:Imap_FreezeImap=1
-let b:Imap_FreezeImap=0
-
 "Conceal機能を無効化
 let g:tex_conceal=''
 
 " beamerをコンパイル
 autocmd FileType tex noremap <buffer> <F9> :w<CR> :!beamer <C-R>%<CR>
 
-
 " neocomplete
 " completefuncを上書き
 let g:neocomplcache_force_overwrite_completefunc = 1
-
-" if_luaが有効ならneocompleteを使う
-NeoBundle has('lua') ? 'Shougo/neocomplete' : 'Shougo/neocomplcache'
 
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
@@ -492,8 +489,6 @@ if !exists('g:neocomplete# force_omni_input_patterns')
 endif
 "let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
-
-
 
 " vimshell {{{
 nnoremap <silent> ,vs :<C-U>VimShell<CR>
@@ -576,9 +571,6 @@ augroup vimrc-auto-cursorline
         endif
     endfunction
 augroup END
-
-" 行末までをヤンク
-nnoremap Y y$
 
 " unite outline
 nnoremap <silent> <Space>o : <C-u>Unite -no-quit -vertical -winwidth=40 outline<CR> 

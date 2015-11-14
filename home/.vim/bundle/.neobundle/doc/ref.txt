@@ -34,7 +34,17 @@ Following sources are included in this plugin:
 - perldoc	(|ref-perldoc.txt|)
 - phpmanual	(|ref-phpmanual.txt|)
 - pydoc		(|ref-pydoc.txt|)
+- redis
 - refe		(|ref-refe.txt|)
+- rfc
+- webdict	(|ref-webdict.txt|)
+
+External sources list:
+https://github.com/thinca/vim-ref/wiki/sources
+
+Other interfaces are also available:
+- ku-ref	(|ku-ref.txt|)
+- unite-ref	(|unite-ref.txt|)
 
 Requirements:
 - Vim 7.2 or later
@@ -165,7 +175,7 @@ ref#system({expr} [, {input}])			*ref#system()*
 ref#to_list({expr}, ...)			*ref#to_list()*
 			Convert {expr} into a |List|.
 			If {expr} is a |List|, return {expr}.
-			If {expr} is a string, splitted by |split()|.
+			If {expr} is a string, split by |split()|.
 			Otherwise, return a |List| which contains {expr}.
 			When two or more arguments are passed, the one that
 			all the arguments were converted is joined and
@@ -212,10 +222,6 @@ KEY MAPPINGS					*ref-key-mappings*
 			|ref#detect()| is used for the detection of the
 			source.  When the source that should be used is not
 			found, the same behavior as |K|.
-
-                        if source=='man' , then a count is avaliable, <count>
-                        K would call man <count> to select page. such as 3K
-                        means man 3.
 
 
 
@@ -274,7 +280,7 @@ g:ref_open					*g:ref_open*
 
 g:ref_cache_dir					*g:ref_cache_dir*
 	The directory for caching.  Some sources uses this via |ref#cache()|.
-	The default value is "~/.vim_ref_cache".  ~ means home directory.
+	The default value is "~/.cache/vim-ref".  ~ means home directory.
 
 g:ref_use_vimproc				*g:ref_use_vimproc*
 	When true, |ref#system()| use |vimproc|.  When |vimproc#system()|

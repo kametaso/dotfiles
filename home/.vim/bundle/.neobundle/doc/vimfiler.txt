@@ -34,10 +34,12 @@ Interface		|vimfiler-interface|
   Key mappings		  |vimfiler-key-mappings|
   Options		  |vimfiler-options|
 Columns			|vimfiler-columns|
+Filters			|vimfiler-filters|
 Examples		|vimfiler-examples|
 Unite sources		|vimfiler-unite-sources|
 Create source		|vimfiler-create-source|
 Create kind		|vimfiler-create-kind|
+Extensions		|vimfiler-extensions|
 FAQ			|vimfiler-faq|
 
 ==============================================================================
@@ -131,6 +133,26 @@ COMMANDS 					*vimfiler-commands*
 :VimFilerClose {buffer-name}			*:VimFilerClose*
 		Close vimfiler buffer named {buffer-name}.
 
+:VimFilerEdit [[{source-name}:]{path}]		*:VimFilerEdit*
+		|:edit| with vimfiler arguments completion.
+		Note: It is available if |g:vimfiler_define_wrapper_commands|
+		is non zero.
+
+:VimFilerWrite [[{source-name}:]{path}]		*:VimFilerWrite*
+		|:write| with vimfiler arguments completion.
+		Note: It is available if |g:vimfiler_define_wrapper_commands|
+		is non zero.
+
+:VimFilerSource [[{source-name}:]{path}]	*:VimFilerSource*
+		|:source| with vimfiler arguments completion.
+		Note: It is available if |g:vimfiler_define_wrapper_commands|
+		is non zero.
+
+:VimFilerRead [[{source-name}:]{path}]		*:VimFilerRead*
+		|:read| with vimfiler arguments completion.
+		Note: It is available if |g:vimfiler_define_wrapper_commands|
+		is non zero.
+
 ------------------------------------------------------------------------------
 FUNCTIONS					*vimfiler-functions*
 
@@ -207,6 +229,13 @@ g:vimfiler_as_default_explorer		*g:vimfiler_as_default_explorer*
 		If this variable is true, Vim use vimfiler as file manager
 		instead of |netrw|. Note: This variable disables |netrw|
 		explorer function.
+		
+		Default value is 0.
+
+					*g:vimfiler_define_wrapper_commands*
+g:vimfiler_define_wrapper_commands
+		If this variable is true, vimfiler will define wrapper
+		commands(|:Edit|, |:Write|, |:Source|, |:Read|).
 		
 		Default value is 0.
 
@@ -332,16 +361,16 @@ g:vimfiler_expand_jump_to_first_child
 		Default value is 1.
 
 g:vimfiler_ignore_pattern			 *g:vimfiler_ignore_pattern*
-		Specify the regexp pattern to ignore candidates of the source.
-		This applies on the filenames of candidates.  It's not case
-		sensitive.
+		Specify the regexp pattern string or list to ignore candidates
+		of the source.  This applies on the filenames of candidates.
+		It's not case sensitive.
 		Note: If you use
 		|<Plug>(vimfiler_toggle_visible_ignore_files)|, the ignore
 		pattern is disabled.
 >
-		let g:vimfiler_ignore_pattern = '^\%(\.git\|\.DS_Store\)$'
+		let g:vimfiler_ignore_pattern = ['^\.git$', '^\.DS_Store$']
 <
-		Default value is '^\.' (dot files pattern).
+		Default value is ['^\.'] (dot files pattern).
 
 g:vimfiler_time_format				*g:vimfiler_time_format*
 		This variable controls displayed time format.
@@ -353,6 +382,11 @@ g:vimfiler_directory_display_top	*g:vimfiler_directory_display_top*
 		This variable controls vimfiler sorts directories as top.
 		
 		Default value is 1.
+
+g:vimfiler_ignore_filters			*g:vimfiler_ignore_filters*
+		This variable controls vimfiler ignore filters.
+
+		Default value is ['matcher_ignore_pattern'].
 
 SOURCES VARIABLES 				*vimfiler-sources-variables*
 
@@ -588,11 +622,6 @@ Normal mode key mappings.
 
 				*<Plug>(vimfiler_execute_system_associated)*
 <Plug>(vimfiler_execute_system_associated)
-<Plug>(vimfiler_execute_file)		*<Plug>(vimfiler_execute_file)*
-		Executes marked files or cursor file by system associated
-		command.
-		Note: <Plug>(vimfiler_execute_file) is obsolete name.
-
 				*<Plug>(vimfiler_execute_vimfiler_associated)*
 <Plug>(vimfiler_execute_vimfiler_associated)
 		Executes cursor file by vimfiler associated command.
@@ -742,8 +771,8 @@ Normal mode key mappings.
 		Chooses |unite| action in selected files.
 
 <Plug>(vimfiler_smart_h)			*<Plug>(vimfiler_smart_h)*
-		Switches to parent directory.
-		If enabled "explorer" option, it will unexpand directory tree.
+		If directory tree is opened, it will unexpand directory tree.
+		Else switches to parent directory.
 
 <Plug>(vimfiler_smart_l)			*<Plug>(vimfiler_smart_l)*
 		Switches to cursor directory or edit cursor file.
@@ -901,6 +930,10 @@ parameters for an option.  You need to escape spaces with "\".
 
 						*vimfiler-options-force-quit*
 		-force-quit
+		Exit the vimfiler buffer after firing an action.
+
+						*vimfiler-options-force-hide*
+		-force-hide
 		Close the vimfiler buffer after firing an action.
 
 						*vimfiler-options-winwidth*
@@ -916,6 +949,11 @@ parameters for an option.  You need to escape spaces with "\".
 		-winheight={window-height}
 		Specifies the height of a vimfiler buffer.
 		Note: If this option is 0, auto resize feature is disabled.
+
+						*vimfiler-options-fnamewidth*
+		-fnamewidth={filename-width}
+		Specifies the filename width of a vimfiler buffer.
+		Note: If this option is less than equal 0, it is disabled.
 
 						*vimfiler-options-direction*
 		-direction={direction}
@@ -1050,6 +1088,21 @@ size		File size.
 time		File time stamp.
 
 ==============================================================================
+FILTERS						*vimfiler-filters*
+
+				*vimfiler-filter-matcher_ignore_pattern*
+matcher_ignore_pattern		Ignores |g:vimfiler_ignore_pattern| pattern
+				matched files.
+
+				*vimfiler-filter-matcher_ignore_wildignore*
+matcher_ignore_wildignore	Ignores 'wildignore' pattern matched files.
+
+				*vimfiler-filter-matcher_ignore_files*
+matcher_ignore_files	Ignores the files in project ignore
+			files(".agignore", ".gitignore", ".hgignore").
+			Note:  It is slow filter.
+
+==============================================================================
 EXAMPLES					*vimfiler-examples*
 >
 	call vimfiler#set_execute_file('txt', 'notepad')
@@ -1061,7 +1114,7 @@ EXAMPLES					*vimfiler-examples*
 	" Edit file by tabedit.
 	"call vimfiler#custom#profile('default', 'context', {
 	"      \ 'safe' : 0,
-	"      \ 'edit_action' : 'tabedit',
+	"      \ 'edit_action' : 'tabopen',
 	"      \ })
 	
 	" Like Textmate icons.
@@ -1176,6 +1229,13 @@ Below "vimfiler__" prefixed actions are used for vimfiler.
 	vimfiler__execute	Execute files with associated program.
 	vimfiler__external_filer
 				Execute files with external file explorer.
+
+==============================================================================
+EXTENSIONS					*vimfiler-extensions*
+
+vimfiler-prompt:
+	https://github.com/romgrk/vimfiler-prompt
+	It navigates vimfiler buffer with auto completion.
 
 ==============================================================================
 FAQ						*vimfiler-faq*

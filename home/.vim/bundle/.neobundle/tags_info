@@ -7,7 +7,7 @@ html5.vim
 indentLine
 jedi-vim
 lightline.vim
-neocomplete
+neocomplcache
 neocomplete.vim
 neomru.vim
 neosnippet

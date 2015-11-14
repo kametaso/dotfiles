@@ -207,3 +207,5 @@ if [ $? -eq 0 ]; then
     export WORKON_HOME=~/.virtualenvs
     export PIP_RESPECT_VIRTUALENV=true
 fi
+
+#export PATH=/usr/local/bin:/usr/bin

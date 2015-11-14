@@ -4,7 +4,7 @@ Version: 0.0
 Author: itchyny (https://github.com/itchyny)
 License: MIT License
 Repository: https://github.com/itchyny/lightline.vim
-Last Change: 2014/11/14 09:20:21.
+Last Change: 2015/07/25 16:57:02.
 
 CONTENTS					*lightline-contents*
 
@@ -143,10 +143,10 @@ OPTIONS						*lightline-option*
 			\             [ 'myreadonly', 'filename', 'modified' ] ],
 			\ },
 			\ 'component_function': {
-			\   'myreadonly': 'MyReadonly'
+			\   'myreadonly': 'LightLineReadonly'
 			\ },
 			\ }
-		function! MyReadonly()
+		function! LightLineReadonly()
 			return &ft !~? 'help' && &readonly ? 'RO' : ''
 		endfunction
 <
@@ -274,17 +274,17 @@ nice.
 		\   'lineinfo': ' %3l:%-2v',
 		\ },
 		\ 'component_function': {
-		\   'readonly': 'MyReadonly',
-		\   'fugitive': 'MyFugitive'
+		\   'readonly': 'LightLineReadonly',
+		\   'fugitive': 'LightLineFugitive'
 		\ },
 		\ 'separator': { 'left': '', 'right': '' },
 		\ 'subseparator': { 'left': '', 'right': '' }
 		\ }
-	function! MyReadonly()
+	function! LightLineReadonly()
 		return &readonly ? '' : ''
 	endfunction
-	function! MyFugitive()
-		if exists("*fugitive#head")
+	function! LightLineFugitive()
+		if exists('*fugitive#head')
 			let _ = fugitive#head()
 			return strlen(_) ? ''._ : ''
 		endif
@@ -299,17 +299,17 @@ look nice.
 		\   'lineinfo': '⭡ %3l:%-2v',
 		\ },
 		\ 'component_function': {
-		\   'readonly': 'MyReadonly',
-		\   'fugitive': 'MyFugitive'
+		\   'readonly': 'LightLineReadonly',
+		\   'fugitive': 'LightLineFugitive'
 		\ },
 		\ 'separator': { 'left': '⮀', 'right': '⮂' },
 		\ 'subseparator': { 'left': '⮁', 'right': '⮃' }
 		\ }
-	function! MyReadonly()
+	function! LightLineReadonly()
 		return &readonly ? '⭤' : ''
 	endfunction
-	function! MyFugitive()
-		if exists("*fugitive#head")
+	function! LightLineFugitive()
+		if exists('*fugitive#head')
 			let _ = fugitive#head()
 			return strlen(_) ? '⭠ '._ : ''
 		endif
@@ -327,7 +327,7 @@ For |vim-powerline| font users:
 		\ 'separator': { 'left': "\u2b80", 'right': "\u2b82" },
 		\ 'subseparator': { 'left': "\u2b81", 'right': "\u2b83" }
 <
-See |lightline-problem-8| for more detail.
+See |lightline-problem-9| for more detail.
 ==============================================================================
 FUNCTION					*lightline-function*
 Exposed functions for lightline.vim.
@@ -504,7 +504,7 @@ It returns an array of three elements. The expanded result is:
 	(tabsel) ['%2T%{lightline#onetab(2,1)}']    ---  s:p.tabline.tabsel[0] = ['gray9', 'gray1']
 	(0)      ['%3T%{lightline#onetab(3,0)}%T']  ---  s:p.tabline.left[0] = ['gray9', 'gray4']
 <
-If the tabline components is
+If the tabline components are
 >
 	let g:lightline.tabline.left = [ [ 'A', 'B', 'tabs', 'C', 'D' ] ]
 <
@@ -600,19 +600,18 @@ normal colorscheme form using:
 	let g:lightline#colorscheme#Tomorrow_Night#palette = lightline#colorscheme#fill(s:p)
 <
 This function fills the cui colors for a palette which has only gui colors, or
-vice varsa. However, note that using the convenient function sources an
+vice versa. However, note that using the convenient function sources an
 additional Vim script file (autoload/lightline/colorscheme.vim), which causes
 a little slow down. If you want to avoid this situation, write all the colors
 as done in autoload/lightline/colorscheme/landscape.vim; firstly create the
 colorscheme using the fill function, and see the result, in a sense, the
 compiled version of your colorscheme.
 >
-	echo g:lightline#colorscheme#yourcolorscheme#palette 
+	echo g:lightline#colorscheme#yourcolorscheme#palette
 <
 Then copy and paste the result to the colorscheme file.
 
 ==============================================================================
-
 EXAMPLES					*lightline-examples*
 You can configure the appearance of statusline.
 Write the following examples in you .vimrc(_vimrc).
@@ -631,22 +630,22 @@ In order to define your own component:
 		\   'left': [ [ 'mode', 'paste' ], [ 'myfilename' ] ]
 		\ },
 		\ 'component_function': {
-		\   'myfilename': 'MyFilename',
-		\   'myreadonly': 'MyReadonly',
-		\   'mymodified': 'MyModified',
+		\   'myfilename': 'LightLineFilename',
+		\   'myreadonly': 'LightLineReadonly',
+		\   'mymodified': 'LightLineModified',
 		\ }
 		\ }
-	function! MyFilename()
-		return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+	function! LightLineFilename()
+		return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
 		      \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
 		      \  &ft == 'unite' ? unite#get_status_string() :
 		      \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-		      \ ('' != MyModified() ? ' ' . MyModified() : '')
+		      \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 	endfunction
-	function! MyReadonly()
+	function! LightLineReadonly()
 		return &ft !~? 'help' && &readonly ? 'RO' : ''
 	endfunction
-	function! MyModified()
+	function! LightLineModified()
 		return &modifiable && &modified ? '+' : ''
 	endfunction
 <
@@ -686,26 +685,26 @@ A nice example for non-patched font users.
 		\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
 		\ },
 		\ 'component_function': {
-		\   'fugitive': 'MyFugitive',
-		\   'filename': 'MyFilename'
+		\   'fugitive': 'LightLineFugitive',
+		\   'filename': 'LightLineFilename'
 		\ }
 		\ }
-	function! MyModified()
+	function! LightLineModified()
 		return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 	endfunction
-	function! MyReadonly()
+	function! LightLineReadonly()
 		return &ft !~? 'help\|vimfiler' && &readonly ? 'RO' : ''
 	endfunction
-	function! MyFilename()
-		return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+	function! LightLineFilename()
+		return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
 		\ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
 		\  &ft == 'unite' ? unite#get_status_string() :
 		\  &ft == 'vimshell' ? vimshell#get_status_string() :
 		\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-		\ ('' != MyModified() ? ' ' . MyModified() : '')
+		\ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 	endfunction
-	function! MyFugitive()
-		if &ft !~? 'vimfiler' && exists("*fugitive#head")
+	function! LightLineFugitive()
+		if &ft !~? 'vimfiler' && exists('*fugitive#head')
 			return fugitive#head()
 		endif
 		return ''
@@ -719,28 +718,28 @@ A nice example for |vim-powerline| font users:
 		\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
 		\ },
 		\ 'component_function': {
-		\   'fugitive': 'MyFugitive',
-		\   'filename': 'MyFilename'
+		\   'fugitive': 'LightLineFugitive',
+		\   'filename': 'LightLineFilename'
 		\ },
 		\ 'separator': { 'left': '⮀', 'right': '⮂' },
 		\ 'subseparator': { 'left': '⮁', 'right': '⮃' }
 		\ }
-	function! MyModified()
+	function! LightLineModified()
 		return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 	endfunction
-	function! MyReadonly()
+	function! LightLineReadonly()
 		return &ft !~? 'help\|vimfiler' && &readonly ? '⭤' : ''
 	endfunction
-	function! MyFilename()
-		return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+	function! LightLineFilename()
+		return ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
 		\ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
 		\  &ft == 'unite' ? unite#get_status_string() :
 		\  &ft == 'vimshell' ? vimshell#get_status_string() :
 		\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-		\ ('' != MyModified() ? ' ' . MyModified() : '')
+		\ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 	endfunction
-	function! MyFugitive()
-		if &ft !~? 'vimfiler' && exists("*fugitive#head")
+	function! LightLineFugitive()
+		if &ft !~? 'vimfiler' && exists('*fugitive#head')
 			let _ = fugitive#head()
 			return strlen(_) ? '⭠ '._ : ''
 		endif
@@ -760,12 +759,12 @@ For users who uses lots of plugins:
 	      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
 	      \ },
 	      \ 'component_function': {
-	      \   'fugitive': 'MyFugitive',
-	      \   'filename': 'MyFilename',
-	      \   'fileformat': 'MyFileformat',
-	      \   'filetype': 'MyFiletype',
-	      \   'fileencoding': 'MyFileencoding',
-	      \   'mode': 'MyMode',
+	      \   'fugitive': 'LightLineFugitive',
+	      \   'filename': 'LightLineFilename',
+	      \   'fileformat': 'LightLineFileformat',
+	      \   'filetype': 'LightLineFiletype',
+	      \   'fileencoding': 'LightLineFileencoding',
+	      \   'mode': 'LightLineMode',
 	      \   'ctrlpmark': 'CtrlPMark',
 	      \ },
 	      \ 'component_expand': {
@@ -776,16 +775,16 @@ For users who uses lots of plugins:
 	      \ },
 	      \ 'subseparator': { 'left': '|', 'right': '|' }
 	      \ }
-	
-	function! MyModified()
+
+	function! LightLineModified()
 	  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 	endfunction
-	
-	function! MyReadonly()
+
+	function! LightLineReadonly()
 	  return &ft !~? 'help' && &readonly ? 'RO' : ''
 	endfunction
-	
-	function! MyFilename()
+
+	function! LightLineFilename()
 	  let fname = expand('%:t')
 	  return fname == 'ControlP' ? g:lightline.ctrlp_item :
 	        \ fname == '__Tagbar__' ? g:lightline.fname :
@@ -793,12 +792,12 @@ For users who uses lots of plugins:
 	        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
 	        \ &ft == 'unite' ? unite#get_status_string() :
 	        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-	        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+	        \ ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
 	        \ ('' != fname ? fname : '[No Name]') .
-	        \ ('' != MyModified() ? ' ' . MyModified() : '')
+	        \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 	endfunction
-	
-	function! MyFugitive()
+
+	function! LightLineFugitive()
 	  try
 	    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
 	      let mark = ''  " edit here for cool mark
@@ -809,20 +808,20 @@ For users who uses lots of plugins:
 	  endtry
 	  return ''
 	endfunction
-	
-	function! MyFileformat()
+
+	function! LightLineFileformat()
 	  return winwidth(0) > 70 ? &fileformat : ''
 	endfunction
-	
-	function! MyFiletype()
+
+	function! LightLineFiletype()
 	  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 	endfunction
-	
-	function! MyFileencoding()
+
+	function! LightLineFileencoding()
 	  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 	endfunction
-	
-	function! MyMode()
+
+	function! LightLineMode()
 	  let fname = expand('%:t')
 	  return fname == '__Tagbar__' ? 'Tagbar' :
 	        \ fname == 'ControlP' ? 'CtrlP' :
@@ -834,7 +833,7 @@ For users who uses lots of plugins:
 	        \ &ft == 'vimshell' ? 'VimShell' :
 	        \ winwidth(0) > 60 ? lightline#mode() : ''
 	endfunction
-	
+
 	function! CtrlPMark()
 	  if expand('%:t') =~ 'ControlP'
 	    call lightline#link('iR'[g:lightline.ctrlp_regex])
@@ -844,12 +843,12 @@ For users who uses lots of plugins:
 	    return ''
 	  endif
 	endfunction
-	
+
 	let g:ctrlp_status_func = {
 	  \ 'main': 'CtrlPStatusFunc_1',
 	  \ 'prog': 'CtrlPStatusFunc_2',
 	  \ }
-	
+
 	function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
 	  let g:lightline.ctrlp_regex = a:regex
 	  let g:lightline.ctrlp_prev = a:prev
@@ -857,18 +856,18 @@ For users who uses lots of plugins:
 	  let g:lightline.ctrlp_next = a:next
 	  return lightline#statusline(0)
 	endfunction
-	
+
 	function! CtrlPStatusFunc_2(str)
 	  return lightline#statusline(0)
 	endfunction
-	
+
 	let g:tagbar_status_func = 'TagbarStatusFunc'
-	
+
 	function! TagbarStatusFunc(current, sort, fname, ...) abort
 	    let g:lightline.fname = a:fname
 	  return lightline#statusline(0)
 	endfunction
-	
+
 	augroup AutoSyntastic
 	  autocmd!
 	  autocmd BufWritePost *.c,*.cpp call s:syntastic()
@@ -877,7 +876,7 @@ For users who uses lots of plugins:
 	  SyntasticCheck
 	  call lightline#update()
 	endfunction
-	
+
 	let g:unite_force_overwrite_statusline = 0
 	let g:vimfiler_force_overwrite_statusline = 0
 	let g:vimshell_force_overwrite_statusline = 0
@@ -1132,7 +1131,7 @@ Problem 11:					*lightline-problem-11*
 		function! CtrlPStatusFunc_2(str)
 		  return lightline#statusline(0)
 		endfunction
-		
+
 		let g:tagbar_status_func = 'TagbarStatusFunc'
 		function! TagbarStatusFunc(current, sort, fname, ...) abort
 		  return lightline#statusline(0)
@@ -1148,10 +1147,10 @@ Problem 12:					*lightline-problem-12*
 >
 		let g:lightline = {
 		      \ 'component': {
-		      \   'modified': '%#ModifiedColor#%{MyModified()}',
+		      \   'modified': '%#ModifiedColor#%{LightLineModified()}',
 		      \ }
 		      \ }
-		function! MyModified()
+		function! LightLineModified()
 		  let map = { 'V': 'n', "\<C-v>": 'n', 's': 'n', 'v': 'n', "\<C-s>": 'n', 'c': 'n', 'R': 'n'}
 		  let mode = get(map, mode()[0], mode()[0])
 		  let bgcolor = {'n': [240, '#585858'], 'i': [31, '#0087af']}
@@ -1194,7 +1193,7 @@ Problem 13:					*lightline-problem-13*
 Problem 14:					*lightline-problem-14*
 	The 'E541' warning appears on the right hand side.
 	Many components disable the statusline of lightline.
-		
+
 		The number of items in statusline/tabline is limited to 80
 		(see |E541|). You cannot register too much components.
 
@@ -1248,8 +1247,7 @@ Problem 17:					*lightline-problem-17*
 	This troubleshooting is not helpful.
 
 		Report/Request the issue/feature at
-		https://github.com/itchyny/lightline.vim/issues .
-
+		https://github.com/itchyny/lightline.vim/issues.
 
 ==============================================================================
 CHANGELOG					*lightline-changelog*
