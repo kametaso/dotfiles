@@ -1,17 +1,16 @@
+set encoding=utf-8
 scriptencoding utf-8
+set fileencoding=uft-8   " カレントバッファのファイルの文字エンコーディング 
+set fileencodings=uft-8  " 既存のファイルの編集を開始するときに考慮される文字エンコーディングのリスト
+set hlg=ja
 
 "General Settings
 set cindent
-set cinoptions=g0
+set cinoptions=g0 "indent for c++'s class
 set smartindent
 set title
 set mouse=a
 set ttymouse=xterm2
-
-"Language Settings
-set encoding=utf8
-set fileencoding=utf8
-set hlg=ja
 
 "Edit Settings
 set tabstop=4
@@ -20,7 +19,9 @@ set expandtab     "replace tab to spaces
 set showmatch     "auto complete )
 set matchtime=1   "wait time for showmatch
 set backspace=indent,eol,start
-set virtualedit=block
+set virtualedit=block "矩形選択時に文字が存在しなくてもカーソルを右へ進める
+"行末までをヤンク
+nnoremap Y y$     
 
 "Display Settings
 set number
@@ -43,8 +44,6 @@ filetype plugin indent on
 filetype indent on
 syntax on
 
-" 行末までをヤンク
-nnoremap Y y$
 
 "split like tmux
 noremap <C-w>% :vsp<CR>
@@ -93,30 +92,6 @@ function! s:hooks.on_source(bundle)
         nmap <buffer> <C-l> <C-w>l
     endfunction
 endfunction
-
-"Quickrun Settings
-"silent! nmap <unique> <C-r> <Plug>(quickrun)
-"let s:hooks = neobundle#get_hooks("vim-quickrun")
-"function! s:hooks.on_source(bundle)
-"    let g:loaded_quicklaunch = 1
-"    let g:quickrun_config = {
-"                \ "*": {"runner": "remote/vimproc"},
-"                \ 'split': '{"rightbelow 10sp"}' ,
-""                \ 'tex': {
-""                \       'command': 'ptex2pdf',  
-""                \       'exec': ['%c -l -ot "-synctex=1 -interaction=nonstopmode" %s', 'open %s:r.pdf']
-""                \  },
-"                \ }
-"    if executable('makelatex')
-"        let g:quickrun_config.tex = {'command' : 'makelatex'}
-"    elseif executable('platex')
-"        let g:quickrun_config.tex = {'command' : 'platex'}
-"    endif
-"endfunction
-
-"autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex -shell-escape "%" && evince %:p:r.pdf<CR>
-"autocmd FileType tex noremap <buffer> <F5> :w<CR> :!makelatex <C-R>%<CR>
-
 
 "neocomplete Settings
 "let s:hooks = neobundle#get_hooks("neocomplete.vim")
@@ -185,7 +160,7 @@ filetype off
 set nocompatible " be iMproved
 if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim
-    call neobundle#begin(expand('~/.vim/bundle/'))
+    call neobundle#rc(expand('~/.vim/bundle/'))
 endif
 
 NeoBundle 'thinca/vim-quickrun'
@@ -229,7 +204,7 @@ NeoBundleLazy "davidhalter/jedi-vim", {
 " if_luaが有効ならneocompleteを使う
 NeoBundle has('lua') ? 'Shougo/neocomplete' : 'Shougo/neocomplcache'
 
-call neobundle#end()
+"call neobundle#end()
 filetype plugin indent on
 "*****************************************************************************"
 
@@ -249,7 +224,6 @@ set clipboard+=autoselect
 set t_Co=256
 
 "Color Scheme
-" colorscheme mirodark
 colorscheme lucius
 set background=dark
 
